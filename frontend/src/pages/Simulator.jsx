@@ -462,7 +462,7 @@ const Simulator = () => {
 
     // LCD poll — heading: 0° = home (header opposite user), increases with yaw
     lcdTimer = setInterval(() => {
-      const deg = Math.round(((droneYaw.current * 180 / Math.PI) % 360 + 360) % 360);
+      const deg = Math.round(((-droneYaw.current * 180 / Math.PI) % 360 + 360) % 360);
       setLcd({
         thr:     Math.round(Math.max(0, ly.current) * 100),
         yaw:     Math.round(lx.current  * 100),
