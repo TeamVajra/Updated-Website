@@ -259,9 +259,9 @@ const Simulator = () => {
       (gltf) => {
         const model = gltf.scene;
 
-        // 1. Rotate Z-up GLB model -90° around X to align header facing opposite side
+        // 1. Rotate Z-up GLB model -90° around X and 180° around Y so FPV camera faces forward (-Z)
         model.rotation.x = -Math.PI / 2;
-        model.rotation.y = 0;
+        model.rotation.y = Math.PI;
 
         // 2. Container object for scaled model
         const modelContainer = new THREE.Group();
@@ -442,9 +442,9 @@ const Simulator = () => {
     lcdTimer = setInterval(() => {
       setLcd({
         thr:  Math.round(Math.max(0, ly.current) * 100),
-        yaw:  Math.round(lx.current  * 100),
-        ptch: Math.round(ry.current  * 100),
-        roll: Math.round(rx.current  * 100),
+        yaw:  Math.round(lx.current   * 100),
+        ptch: Math.round(-ry.current  * 100), // Telemetry displays +100% when stick is pushed UP
+        roll: Math.round(-rx.current  * 100), // Telemetry displays +100% when stick is pushed RIGHT
       });
     }, 80);
 
@@ -480,7 +480,7 @@ const Simulator = () => {
     lx.current = x; ly.current = y;
   }, []);
   const onRight = useCallback((x, y) => {
-    rx.current = x; ry.current = y;
+    rx.current = -x; ry.current = -y; // Inverted flight stick controls
   }, []);
 
   /* ── Render ── */
