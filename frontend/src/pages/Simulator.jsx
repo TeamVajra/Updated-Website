@@ -8,12 +8,27 @@ import './Simulator.css';
    springBack=false  → throttle behaviour (knob stays)
    springBack=true   → pitch/roll behaviour (snaps centre)
 ══════════════════════════════════════════════════════ */
-const Joystick = ({ color = '#f7c275', onValue, springBack = true }) => {
+const Joystick = ({
+  color = '#f7c275',
+  onValue,
+  springBackX = true,
+  springBackY = true,
+  initialY = 0,
+  isThrottle = false
+}) => {
   const outerRef   = useRef(null);
   const knobRef    = useRef(null);
   const isActive   = useRef(false);
   const padCenter  = useRef({ x: 0, y: 0 });
+  const currentPos = useRef({ x: 0, y: initialY });
   const RADIUS     = 50;
+
+  // Position knob at initial position on mount
+  useEffect(() => {
+    if (knobRef.current && initialY !== 0) {
+      knobRef.current.style.transform = `translate(0px, ${initialY}px)`;
+    }
+  }, [initialY]);
 
   const clamp = (dx, dy) => {
     const d = Math.sqrt(dx * dx + dy * dy);
@@ -22,12 +37,15 @@ const Joystick = ({ color = '#f7c275', onValue, springBack = true }) => {
   };
 
   const apply = useCallback((cx, cy) => {
+    currentPos.current = { x: cx, y: cy };
     if (knobRef.current) {
       knobRef.current.style.transition = 'none';
       knobRef.current.style.transform  = `translate(${cx}px,${cy}px)`;
     }
-    onValue(cx / RADIUS, -(cy / RADIUS));
-  }, [onValue]);
+    const valX = cx / RADIUS;
+    const valY = isThrottle ? (RADIUS - cy) / (2 * RADIUS) : -(cy / RADIUS);
+    onValue(valX, valY);
+  }, [onValue, isThrottle]);
 
   const getXY = (e) => {
     const s = e.touches ? e.touches[0] : e;
@@ -55,15 +73,24 @@ const Joystick = ({ color = '#f7c275', onValue, springBack = true }) => {
   const onEnd = useCallback(() => {
     if (!isActive.current) return;
     isActive.current = false;
-    if (springBack) {
-      if (knobRef.current) {
-        knobRef.current.style.transition = 'transform 0.3s cubic-bezier(0.22,1,0.36,1)';
-        knobRef.current.style.transform  = 'translate(0px,0px)';
-      }
-      onValue(0, 0);
+
+    let targetX = currentPos.current.x;
+    let targetY = currentPos.current.y;
+
+    if (springBackX) targetX = 0;
+    if (springBackY) targetY = 0;
+
+    currentPos.current = { x: targetX, y: targetY };
+
+    if (knobRef.current) {
+      knobRef.current.style.transition = 'transform 0.3s cubic-bezier(0.22,1,0.36,1)';
+      knobRef.current.style.transform  = `translate(${targetX}px,${targetY}px)`;
     }
-    // throttle mode: knob and value stay put
-  }, [springBack, onValue]);
+
+    const valX = targetX / RADIUS;
+    const valY = isThrottle ? (RADIUS - targetY) / (2 * RADIUS) : -(targetY / RADIUS);
+    onValue(valX, valY);
+  }, [springBackX, springBackY, isThrottle, onValue]);
 
   useEffect(() => {
     window.addEventListener('mousemove', onMove);
@@ -435,7 +462,7 @@ const Simulator = () => {
   }, []);
   const onRight = useCallback((x, y) => {
     if (!isArmedRef.current) return;
-    rx.current = x; ry.current = y;
+    rx.current = x; ry.current = -y; // Inverted pitch direction
   }, []);
 
   /* ── Render ── */
@@ -469,7 +496,14 @@ const Simulator = () => {
             {/* LEFT STICK — Throttle / Yaw */}
             <div className="tx-stick-zone">
               <div className="tx-axis-label tx-axis-top">THROTTLE ↑↓</div>
-              <Joystick color="#f7c275" onValue={onLeft} springBack={false} />
+              <Joystick
+                color="#f7c275"
+                onValue={onLeft}
+                springBackX={true}
+                springBackY={false}
+                initialY={50}
+                isThrottle={true}
+              />
               <div className="tx-axis-label tx-axis-bot">← YAW →</div>
             </div>
 
@@ -538,7 +572,14 @@ const Simulator = () => {
             {/* RIGHT STICK — Pitch / Roll */}
             <div className="tx-stick-zone">
               <div className="tx-axis-label tx-axis-top">PITCH ↑↓</div>
-              <Joystick color="#7dd3fc" onValue={onRight} springBack={true} />
+              <Joystick
+                color="#7dd3fc"
+                onValue={onRight}
+                springBackX={true}
+                springBackY={true}
+                initialY={0}
+                isThrottle={false}
+              />
               <div className="tx-axis-label tx-axis-bot">← ROLL →</div>
             </div>
 
