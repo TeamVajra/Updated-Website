@@ -439,7 +439,7 @@ const Simulator = () => {
       // Drone rotations — only when armed
       if (isArmedRef.current) {
         drone.rotation.z = THREE.MathUtils.lerp(drone.rotation.z, rx.current * (Math.PI / 5.5), 0.08);
-        drone.rotation.x = THREE.MathUtils.lerp(drone.rotation.x, ry.current * (Math.PI / 5.5), 0.08);
+        drone.rotation.x = THREE.MathUtils.lerp(drone.rotation.x, -ry.current * (Math.PI / 5.5), 0.08); // Inverted pitch
         droneYaw.current -= lx.current * 0.028; // Inverted yaw control
         drone.rotation.y  = Math.PI + droneYaw.current; // Math.PI base = header opposite user
 
@@ -460,9 +460,10 @@ const Simulator = () => {
     };
     animate();
 
-    // LCD poll
+    // LCD poll — heading uses actual drone.rotation.y (Math.PI base + yaw offset)
     lcdTimer = setInterval(() => {
-      const deg = Math.round(((-droneYaw.current * 180 / Math.PI) % 360 + 360) % 360);
+      const rawRad = Math.PI + droneYaw.current; // matches drone.rotation.y
+      const deg = Math.round(((rawRad * 180 / Math.PI) % 360 + 360) % 360);
       setLcd({
         thr:     Math.round(Math.max(0, ly.current) * 100),
         yaw:     Math.round(lx.current  * 100),
