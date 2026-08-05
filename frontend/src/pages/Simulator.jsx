@@ -237,8 +237,9 @@ const Simulator = () => {
       (gltf) => {
         const model = gltf.scene;
 
-        // 1. Rotate Z-up GLB model -90° around X so top is Y-up
+        // 1. Rotate Z-up GLB model -90° around X and 180° around Y so FPV camera faces forward (-Z)
         model.rotation.x = -Math.PI / 2;
+        model.rotation.y = Math.PI;
 
         // 2. Container object for scaled model
         const modelContainer = new THREE.Group();
