@@ -52,4 +52,55 @@ a:hover {
   }
 }
 
-/* Admin specific global if any, although they should be in admin.css */
+/* ===== Hover Watermark Overlay (© Team Vajra) ===== */
+.ui-card,
+.drone-image-container,
+.featured-image,
+.blog-image-wrapper,
+.lightbox-content,
+.watermark-img-wrap {
+  position: relative;
+  overflow: hidden;
+}
+
+.ui-card::after,
+.drone-image-container::after,
+.featured-image::after,
+.blog-image-wrapper::after,
+.lightbox-content::after,
+.watermark-img-wrap::after {
+  content: '© Team Vajra';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.85);
+  font-family: var(--font-primary, 'Lexend', 'Poppins', sans-serif);
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: rgba(255, 255, 255, 0.95);
+  background: rgba(12, 14, 24, 0.72);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  padding: 8px 22px;
+  border-radius: 30px;
+  border: 1px solid rgba(247, 194, 117, 0.45);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 10;
+  white-space: nowrap;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+}
+
+.ui-card:hover::after,
+.drone-image-container:hover::after,
+.featured-image:hover::after,
+.blog-image-wrapper:hover::after,
+.lightbox-content:hover::after,
+.watermark-img-wrap:hover::after {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+

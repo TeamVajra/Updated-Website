@@ -185,7 +185,11 @@ const BlogCard = ({ blog, id, user }) => {
         <article className="blog-post" style={{ display: 'block' }}>
           <h2>{blog.title || 'Untitled'}</h2>
           <div className="blog-meta">Published: {formatDate(blog.publishedAt)} · Category: {blog.category || 'General'}</div>
-          {blog.featuredImage && <img src={blog.featuredImage} alt={blog.title} className="blog-image-inline" />}
+          {blog.featuredImage && (
+            <div className="blog-image-wrapper">
+              <img src={blog.featuredImage} alt={blog.title} className="blog-image-inline" />
+            </div>
+          )}
           
           <div className="blog-content" dangerouslySetInnerHTML={{ __html: blog.content || '' }}></div>
           
