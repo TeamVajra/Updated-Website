@@ -331,10 +331,10 @@ const Simulator = () => {
           return propRoot;
         };
 
-        // Motor positions relative to scaled drone center
-        const armX = 1.05;
-        const armZ = 1.05;
-        const propY = 0.14;
+        // Motor positions aligned to exact frame motor mounts
+        const armX = 0.987;
+        const armZ = 0.987;
+        const propY = 0.07;
 
         // ALL 4 PROPELLERS ARE ELECTRIC BLUE (0x1d4ed8)
         const PROP_COLOR = 0x1d4ed8;
@@ -462,7 +462,7 @@ const Simulator = () => {
   }, []);
   const onRight = useCallback((x, y) => {
     if (!isArmedRef.current) return;
-    rx.current = x; ry.current = -y; // Inverted pitch direction
+    rx.current = -x; ry.current = -y; // Inverted roll & pitch
   }, []);
 
   /* ── Render ── */
