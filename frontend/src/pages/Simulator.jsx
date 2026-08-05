@@ -237,22 +237,19 @@ const Simulator = () => {
       (gltf) => {
         const model = gltf.scene;
 
-        // Calculate raw bounding box
-        const rawBox = new THREE.Box3().setFromObject(model);
-        const rawCenter = rawBox.getCenter(new THREE.Vector3());
-
-        // Center model mesh offset
-        model.position.sub(rawCenter);
-
-        // Drone.glb exported in Z-up orientation: rotate -90° around X so top is Y-up
+        // 1. Rotate Z-up GLB model -90° around X so top is Y-up
         model.rotation.x = -Math.PI / 2;
 
-        // Container object for scaled model
+        // 2. Container object for scaled model
         const modelContainer = new THREE.Group();
         modelContainer.add(model);
 
-        // Scale model to standard simulator size (~2.4 units wide)
+        // 3. Center model in container after rotation
         const bbox = new THREE.Box3().setFromObject(modelContainer);
+        const center = bbox.getCenter(new THREE.Vector3());
+        model.position.sub(center);
+
+        // 4. Scale modelContainer to standard simulator size (~2.4 units wide)
         const size = bbox.getSize(new THREE.Vector3());
         const maxDim = Math.max(size.x, size.z);
         const scale = 2.4 / maxDim;
@@ -332,18 +329,18 @@ const Simulator = () => {
         };
 
         // Motor positions aligned to exact frame motor mounts
-        const armX = 0.987;
-        const armZ = 0.987;
+        const armX = 1.078;
+        const armZ = 1.078;
         const propY = 0.07;
 
         // ALL 4 PROPELLERS ARE ELECTRIC BLUE (0x1d4ed8)
         const PROP_COLOR = 0x1d4ed8;
 
         const motorLocs = [
-          { x:  armX, z:  armZ, color: PROP_COLOR }, // Front-Left (Blue)
-          { x: -armX, z:  armZ, color: PROP_COLOR }, // Front-Right (Blue)
-          { x: -armX, z: -armZ, color: PROP_COLOR }, // Rear-Right (Blue)
-          { x:  armX, z: -armZ, color: PROP_COLOR }, // Rear-Left (Blue)
+          { x:  armX, z: -armZ, color: PROP_COLOR }, // Front-Right
+          { x: -armX, z: -armZ, color: PROP_COLOR }, // Front-Left
+          { x: -armX, z:  armZ, color: PROP_COLOR }, // Rear-Left
+          { x:  armX, z:  armZ, color: PROP_COLOR }, // Rear-Right
         ];
 
         motorLocs.forEach(({ x, z, color }, i) => {
