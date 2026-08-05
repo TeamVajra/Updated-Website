@@ -483,6 +483,29 @@
   box-shadow: 0 0 6px rgba(74,222,128,.15), 0 2px 4px rgba(0,0,0,.5);
 }
 
+/* ── Arm Warning Banner ── */
+.arm-warning-banner {
+  background: rgba(220, 38, 38, 0.92);
+  color: #ffffff;
+  border: 1px solid rgba(248, 113, 113, 0.7);
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.6);
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  padding: 8px 12px;
+  border-radius: 8px;
+  text-align: center;
+  width: 100%;
+  animation: pulseWarning 0.25s ease-in-out;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
+  margin-top: 4px;
+}
+
+@keyframes pulseWarning {
+  0% { transform: scale(0.92); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
 /* ── Legend ── */
 .sim-legend {
   display: flex;

@@ -156,16 +156,38 @@ const Simulator = () => {
   /* LCD display state (80 ms poll) */
   const [lcd, setLcd] = useState({ thr: 0, yaw: 0, ptch: 0, roll: 0 });
 
-  /* ARM / DISARM */
-  const [isArmed, setIsArmed] = useState(false);
-  const isArmedRef = useRef(false); // ref so RAF can read it without stale closure
+  /* ARM / DISARM with Safety Checks */
+  const [isArmed, setIsArmed]       = useState(false);
+  const [armWarning, setArmWarning] = useState('');
+  const isArmedRef                  = useRef(false); // ref so RAF can read it without stale closure
 
   const toggleArm = useCallback(() => {
-    setIsArmed(prev => {
-      const next = !prev;
-      isArmedRef.current = next;
-      return next;
-    });
+    if (isArmedRef.current) {
+      // Disarm immediately
+      isArmedRef.current = false;
+      setIsArmed(false);
+      setArmWarning('');
+      return;
+    }
+
+    // Safety Check 1: Throttle must be zero / low
+    if (ly.current > 0.05) {
+      setArmWarning('⚠️ CANNOT ARM: THROTTLE IS HIGH! LOWER THROTTLE TO ZERO');
+      setTimeout(() => setArmWarning(''), 3500);
+      return;
+    }
+
+    // Safety Check 2: Pitch, Roll & Yaw axes must be centered / level
+    if (Math.abs(rx.current) > 0.1 || Math.abs(ry.current) > 0.1 || Math.abs(lx.current) > 0.1) {
+      setArmWarning('⚠️ CANNOT ARM: STICKS NOT CENTERED / DRONE NOT LEVEL!');
+      setTimeout(() => setArmWarning(''), 3500);
+      return;
+    }
+
+    // All safety checks passed -> ARM
+    isArmedRef.current = true;
+    setIsArmed(true);
+    setArmWarning('');
   }, []);
 
   /* ── Three.js setup ── */
@@ -455,12 +477,10 @@ const Simulator = () => {
   }, []);
 
   const onLeft  = useCallback((x, y) => {
-    if (!isArmedRef.current) return; // ignore controls when disarmed
     lx.current = x; ly.current = y;
   }, []);
   const onRight = useCallback((x, y) => {
-    if (!isArmedRef.current) return;
-    rx.current = -x; ry.current = -y; // Inverted roll & pitch
+    rx.current = x; ry.current = y;
   }, []);
 
   /* ── Render ── */
@@ -565,6 +585,13 @@ const Simulator = () => {
                   </div>
                 </div>
               </div>
+
+              {/* Arming safety warning banner */}
+              {armWarning && (
+                <div className="arm-warning-banner">
+                  {armWarning}
+                </div>
+              )}
             </div>
 
             {/* RIGHT STICK — Pitch / Roll */}
