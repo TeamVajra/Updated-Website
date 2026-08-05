@@ -276,9 +276,9 @@ const Simulator = () => {
       (gltf) => {
         const model = gltf.scene;
 
-        // 1. Rotate Z-up GLB model -90° around X and 180° around Y so FPV camera faces forward (-Z)
+        // 1. Rotate Z-up GLB model -90° around X so FPV camera header faces towards user (+Z)
         model.rotation.x = -Math.PI / 2;
-        model.rotation.y = Math.PI;
+        model.rotation.y = 0;
 
         // 2. Container object for scaled model
         const modelContainer = new THREE.Group();
@@ -436,7 +436,7 @@ const Simulator = () => {
       if (isArmedRef.current) {
         drone.rotation.z = THREE.MathUtils.lerp(drone.rotation.z, rx.current * (Math.PI / 5.5), 0.08);
         drone.rotation.x = THREE.MathUtils.lerp(drone.rotation.x, ry.current * (Math.PI / 5.5), 0.08);
-        droneYaw.current += lx.current * 0.028;
+        droneYaw.current -= lx.current * 0.028; // Inverted yaw control
         drone.rotation.y  = droneYaw.current;
 
         // Throttle altitude + hover bob
