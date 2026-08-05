@@ -166,9 +166,11 @@ const Simulator = () => {
     rx.current        = 0;
     ry.current        = 0;
     lx.current        = 0;
+    droneYaw.current  = 0;
     if (droneRef.current) {
       droneRef.current.position.set(0, 0, 0);
-      droneRef.current.rotation.set(0, 0, 0);
+      // Reset to base orientation: header faces opposite to user (Math.PI), level
+      droneRef.current.rotation.set(0, Math.PI, 0);
     }
   }, []);
 
@@ -276,9 +278,8 @@ const Simulator = () => {
       (gltf) => {
         const model = gltf.scene;
 
-        // 1. Rotate Z-up GLB model -90° around X and 180° around Y so FPV camera header faces opposite to user (-Z)
+        // 1. Rotate Z-up GLB model -90° around X
         model.rotation.x = -Math.PI / 2;
-        model.rotation.y = Math.PI;
 
         // 2. Container object for scaled model
         const modelContainer = new THREE.Group();
@@ -310,6 +311,9 @@ const Simulator = () => {
         });
 
         drone.add(modelContainer);
+
+        // Rotate root drone group 180° so FPV camera header faces opposite to user
+        drone.rotation.y = Math.PI;
 
         /* ── Realistic 3-Blade FPV Propellers ── */
         // Create 3-blade propeller geometry (central hub + 3 pitched aerodynamic blades)
@@ -437,16 +441,17 @@ const Simulator = () => {
         drone.rotation.z = THREE.MathUtils.lerp(drone.rotation.z, rx.current * (Math.PI / 5.5), 0.08);
         drone.rotation.x = THREE.MathUtils.lerp(drone.rotation.x, ry.current * (Math.PI / 5.5), 0.08);
         droneYaw.current -= lx.current * 0.028; // Inverted yaw control
-        drone.rotation.y  = droneYaw.current;
+        drone.rotation.y  = Math.PI + droneYaw.current; // Math.PI base = header opposite user
 
         // Throttle altitude + hover bob
         droneAlt.current = THREE.MathUtils.lerp(droneAlt.current, Math.max(0, ly.current) * 1.8, 0.04);
         const bob = ly.current > 0.05 ? Math.sin(t * 1.5) * 0.07 : 0;
         drone.position.y = THREE.MathUtils.lerp(drone.position.y, droneAlt.current + bob, 0.05);
       } else {
-        // Return to level & land when disarmed
+        // Return to level & land when disarmed; restore base heading (header opposite to user)
         drone.rotation.z = THREE.MathUtils.lerp(drone.rotation.z, 0, 0.05);
         drone.rotation.x = THREE.MathUtils.lerp(drone.rotation.x, 0, 0.05);
+        drone.rotation.y = THREE.MathUtils.lerp(drone.rotation.y, Math.PI + droneYaw.current, 0.05);
         droneAlt.current = THREE.MathUtils.lerp(droneAlt.current, 0, 0.03);
         drone.position.y = THREE.MathUtils.lerp(drone.position.y, 0, 0.03);
       }
