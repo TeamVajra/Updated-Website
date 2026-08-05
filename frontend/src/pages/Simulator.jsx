@@ -143,9 +143,10 @@ const Simulator = () => {
   const rx = useRef(0);   // Roll
   const ry = useRef(0);   // Pitch
 
-  /* Drone derived state */
+  /* Drone derived state & refs */
   const droneAlt   = useRef(0);
   const droneYaw   = useRef(0);
+  const droneRef   = useRef(null);
 
   /* Camera orbit */
   const azimuth    = useRef(0.5);
@@ -154,7 +155,22 @@ const Simulator = () => {
   const camPrev    = useRef({ x: 0, y: 0 });
 
   /* LCD display state (80 ms poll) */
-  const [lcd, setLcd] = useState({ thr: 0, yaw: 0, ptch: 0, roll: 0 });
+  const [lcd, setLcd] = useState({ thr: 0, yaw: 0, ptch: 0, roll: 0, heading: 0 });
+
+  /* Re-center drone function */
+  const recenterDrone = useCallback(() => {
+    droneYaw.current  = 0;
+    droneAlt.current  = 0;
+    azimuth.current   = 0;
+    elevation.current = 0.35;
+    rx.current        = 0;
+    ry.current        = 0;
+    lx.current        = 0;
+    if (droneRef.current) {
+      droneRef.current.position.set(0, 0, 0);
+      droneRef.current.rotation.set(0, 0, 0);
+    }
+  }, []);
 
   /* ARM / DISARM with Safety Checks */
   const [isArmed, setIsArmed]       = useState(false);
@@ -243,6 +259,7 @@ const Simulator = () => {
 
     /* ── Root Drone Group ── */
     const drone = new THREE.Group();
+    droneRef.current = drone;
     scene.add(drone);
 
     const propMeshes = [];
@@ -417,8 +434,8 @@ const Simulator = () => {
 
       // Drone rotations — only when armed
       if (isArmedRef.current) {
-        drone.rotation.z = THREE.MathUtils.lerp(drone.rotation.z, -rx.current * (Math.PI / 5.5), 0.08);
-        drone.rotation.x = THREE.MathUtils.lerp(drone.rotation.x, -ry.current * (Math.PI / 5.5), 0.08);
+        drone.rotation.z = THREE.MathUtils.lerp(drone.rotation.z, rx.current * (Math.PI / 5.5), 0.08);
+        drone.rotation.x = THREE.MathUtils.lerp(drone.rotation.x, ry.current * (Math.PI / 5.5), 0.08);
         droneYaw.current += lx.current * 0.028;
         drone.rotation.y  = droneYaw.current;
 
@@ -440,11 +457,13 @@ const Simulator = () => {
 
     // LCD poll
     lcdTimer = setInterval(() => {
+      const deg = Math.round(((-droneYaw.current * 180 / Math.PI) % 360 + 360) % 360);
       setLcd({
-        thr:  Math.round(Math.max(0, ly.current) * 100),
-        yaw:  Math.round(lx.current  * 100),
-        ptch: Math.round(ry.current  * 100),
-        roll: Math.round(rx.current  * 100),
+        thr:     Math.round(Math.max(0, ly.current) * 100),
+        yaw:     Math.round(lx.current  * 100),
+        ptch:    Math.round(ry.current  * 100),
+        roll:    Math.round(rx.current  * 100),
+        heading: deg,
       });
     }, 80);
 
@@ -491,8 +510,24 @@ const Simulator = () => {
         <p className="sim-sub">Drag the transmitter sticks to fly · Drag the 3D view to orbit</p>
       </div>
 
-      {/* 3D canvas */}
-      <div className="sim-canvas" ref={mountRef} />
+      {/* 3D Canvas with overlay HUD & Re-center control */}
+      <div className="sim-canvas-wrap">
+        <button className="sim-btn-recenter" onClick={recenterDrone} title="Re-center drone position & align header front">
+          🎯 RE-CENTER DRONE
+        </button>
+
+        <div className="sim-heading-hud">
+          <div className="hud-compass">
+            <span className="compass-pointer" style={{ transform: `rotate(${lcd.heading || 0}deg)` }}>▲</span>
+          </div>
+          <div className="hud-info">
+            <span className="hud-label">HEADER DIR</span>
+            <span className="hud-val">{lcd.heading || 0}°</span>
+          </div>
+        </div>
+
+        <div className="sim-canvas" ref={mountRef} />
+      </div>
 
       {/* ══ RC Transmitter ══ */}
       <div className="tx-perspective">

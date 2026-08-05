@@ -16,7 +16,94 @@
 .sim-title  { font-size: 2.2rem; font-weight: 700; color: var(--brand-yellow); text-shadow: 0 0 28px rgba(247,194,117,.35); margin-bottom: 6px; }
 .sim-sub    { color: var(--text-muted); font-size: 0.92rem; }
 
-/* ── 3D Canvas ── */
+/* ── 3D Canvas Wrap & HUD Overlays ── */
+.sim-canvas-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 920px;
+}
+
+.sim-heading-hud {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: rgba(12, 14, 24, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(247, 194, 117, 0.3);
+  border-radius: 12px;
+  padding: 8px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+  pointer-events: none;
+  z-index: 10;
+}
+
+.hud-compass {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(247, 194, 117, 0.5);
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.compass-pointer {
+  font-size: 0.85rem;
+  color: var(--brand-yellow);
+  transition: transform 0.1s ease-out;
+  display: inline-block;
+}
+
+.hud-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.hud-label {
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.hud-val {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--brand-yellow);
+  font-family: monospace;
+}
+
+.sim-btn-recenter {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  background: rgba(12, 14, 24, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(247, 194, 117, 0.3);
+  color: var(--brand-yellow);
+  border-radius: 10px;
+  padding: 8px 14px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.sim-btn-recenter:hover {
+  background: rgba(247, 194, 117, 0.2);
+  border-color: var(--brand-yellow);
+  transform: translateY(-1px);
+}
+
 .sim-canvas {
   width: 100%;
   max-width: 920px;
