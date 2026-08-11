@@ -444,7 +444,7 @@ const Simulator = () => {
         // Target pitch & roll angles (lerp toward stick targets)
         const targetPitch = THREE.MathUtils.lerp(
           drone.userData.curPitch ?? 0,
-          -ry.current * (Math.PI / 5.5),
+          ry.current * (Math.PI / 5.5),
           0.08
         );
         const targetRoll = THREE.MathUtils.lerp(
