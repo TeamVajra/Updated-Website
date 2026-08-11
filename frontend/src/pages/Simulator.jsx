@@ -437,11 +437,29 @@ const Simulator = () => {
       camera.lookAt(0, drone.position.y, 0);
 
       // Drone rotations — only when armed
+      // Use quaternion composition so pitch/roll are always relative to the drone's yawed heading.
       if (isArmedRef.current) {
-        drone.rotation.z = THREE.MathUtils.lerp(drone.rotation.z, rx.current * (Math.PI / 5.5), 0.08);
-        drone.rotation.x = THREE.MathUtils.lerp(drone.rotation.x, -ry.current * (Math.PI / 5.5), 0.08); // Inverted pitch
-        droneYaw.current -= lx.current * 0.028; // Inverted yaw control
-        drone.rotation.y  = Math.PI + droneYaw.current; // Math.PI base = header opposite user
+        droneYaw.current -= lx.current * 0.028; // accumulate yaw
+
+        // Target pitch & roll angles (lerp toward stick targets)
+        const targetPitch = THREE.MathUtils.lerp(
+          drone.userData.curPitch ?? 0,
+          -ry.current * (Math.PI / 5.5),
+          0.08
+        );
+        const targetRoll = THREE.MathUtils.lerp(
+          drone.userData.curRoll ?? 0,
+          rx.current * (Math.PI / 5.5),
+          0.08
+        );
+        drone.userData.curPitch = targetPitch;
+        drone.userData.curRoll  = targetRoll;
+
+        // Build quaternion: yaw (world-Y) → pitch (local X) → roll (local Z)
+        const qYaw   = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI + droneYaw.current);
+        const qPitch = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), targetPitch);
+        const qRoll  = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), targetRoll);
+        drone.quaternion.copy(qYaw).multiply(qPitch).multiply(qRoll);
 
         // Throttle altitude + hover bob
         droneAlt.current = THREE.MathUtils.lerp(droneAlt.current, Math.max(0, ly.current) * 1.8, 0.04);
@@ -449,9 +467,14 @@ const Simulator = () => {
         drone.position.y = THREE.MathUtils.lerp(drone.position.y, droneAlt.current + bob, 0.05);
       } else {
         // Return to level & land when disarmed; restore base heading (header opposite to user)
-        drone.rotation.z = THREE.MathUtils.lerp(drone.rotation.z, 0, 0.05);
-        drone.rotation.x = THREE.MathUtils.lerp(drone.rotation.x, 0, 0.05);
-        drone.rotation.y = THREE.MathUtils.lerp(drone.rotation.y, Math.PI + droneYaw.current, 0.05);
+        drone.userData.curPitch = THREE.MathUtils.lerp(drone.userData.curPitch ?? 0, 0, 0.05);
+        drone.userData.curRoll  = THREE.MathUtils.lerp(drone.userData.curRoll  ?? 0, 0, 0.05);
+
+        const qYaw   = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI + droneYaw.current);
+        const qPitch = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), drone.userData.curPitch);
+        const qRoll  = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), drone.userData.curRoll);
+        drone.quaternion.copy(qYaw).multiply(qPitch).multiply(qRoll);
+
         droneAlt.current = THREE.MathUtils.lerp(droneAlt.current, 0, 0.03);
         drone.position.y = THREE.MathUtils.lerp(drone.position.y, 0, 0.03);
       }
