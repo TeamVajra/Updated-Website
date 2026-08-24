@@ -1,4 +1,4 @@
-# ✈️ Team Vajra – Official Club Website
+# ✈️ Team Vajra – Official Website
 
 > The official website of **Team Vajra**, the RC Drone & UAV club of MMCOE (Marathwada Minda College of Engineering), Pune.
 
@@ -36,22 +36,5 @@ club_website/
 └── legacy/            # Original static HTML/CSS site (archived)
 ```
 
----
 
-
-
-## 🌐 Pages
-
-| Page | Route |
-|---|---|
-| Home | `/` |
-| Drones | `/drones` |
-| Team | `/team` |
-| Achievements | `/achievements` |
-| Gallery | `/gallery` |
-| Blog | `/blog` |
-| Contact | `/contact` |
-| Admin Dashboard | `/admin` |
-
----
 
