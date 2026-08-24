@@ -12,7 +12,7 @@
 | Styling | Vanilla CSS (custom design system) |
 | Auth & DB | Firebase (Auth + Firestore) |
 | Backend | Node.js + Express |
-| Email | Nodemailer (Gmail SMTP) |
+| Email | Resend Mail |
 
 ---
 
@@ -38,61 +38,7 @@ club_website/
 
 ---
 
-## ⚙️ Getting Started
 
-### Prerequisites
-- Node.js v18+
-- npm
-
-### 1. Clone the repository
-
-```bash
-git clone https://github.com/your-org/club_website.git
-cd club_website
-```
-
-### 2. Set up the Backend
-
-```bash
-cd backend
-npm install
-
-# Copy the env template and fill in your values
-cp .env.example .env
-# Edit .env with your Gmail credentials
-```
-
-Start the backend server:
-```bash
-npm start
-# Server runs on http://localhost:5001
-```
-
-### 3. Set up the Frontend
-
-```bash
-cd frontend
-npm install
-npm run dev
-# App runs on http://localhost:5173
-```
-
----
-
-## 🔐 Environment Variables
-
-The backend requires a `.env` file in the `backend/` directory. **Never commit this file.**
-
-Copy `backend/.env.example` to `backend/.env` and fill in:
-
-| Variable | Description |
-|---|---|
-| `EMAIL_USER` | Gmail address used to send contact emails |
-| `EMAIL_PASS` | Gmail App Password (16-char, from Google Account > Security) |
-| `EMAIL_TO` | Email address that receives contact form submissions |
-| `PORT` | Port for the Express server (default: `5001`) |
-
----
 
 ## 🌐 Pages
 
@@ -109,16 +55,3 @@ Copy `backend/.env.example` to `backend/.env` and fill in:
 
 ---
 
-## 🔥 Firebase Setup
-
-The frontend uses Firebase for:
-- **Authentication** – Admin login
-- **Firestore** – Blog posts storage
-
-The Firebase config is in `frontend/src/firebase.js`. Update it with your own Firebase project credentials if you fork this project.
-
----
-
-## 📜 License
-
-This project is the intellectual property of **Team Vajra, MMCOE**. All rights reserved.
