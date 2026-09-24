@@ -220,12 +220,6 @@ const teamMembers = [
     src: "/assets/MEMBER POST/Bhavesh.png",
     alt: "Bhavesh Kutemate"
   },
-  {
-    name: "Swara Kulkarni",
-    href: "https://www.linkedin.com/in/swara-kulkarni-b03285399?utm_source=share_via&utm_content=profile&utm_medium=member_android",
-    src: "/assets/MEMBER POST/Swara.png",
-    alt: "Swara Kulkarni"
-  },
 ];
 
 const Team = () => {
