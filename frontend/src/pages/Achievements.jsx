@@ -13,12 +13,14 @@ const achievementsData = [
     src: '/assets/Drone -1 Zonals.jpg',
     alt: 'Technoxian 10.0 Zonals - Drone Rescue Rank - 1',
     title: 'Technoxian 10.0 Zonals - Drone Rescue Rank - 1',
+    description: "Team Vajra secured 1st Place in the Drone Rescue event at the TechnoXian World Robotics Championship, showcasing exceptional drone handling, technical precision, and effective problem-solving. This achievement reflects the team's dedication to innovation and excellence in competitive drone technology.",
   },
   {
     year: '2026',
     src: '/assets/Drone -2 Zonals.jpg',
     alt: 'Technoxian 10.0 Zonals - Drone Rescue Rank - 3',
     title: 'Technoxian 10.0 Zonals - Drone Rescue Rank - 3',
+    description: "Team Vajra secured 3rd Place in the Drone Rescue event at the TechnoXian World Robotics Championship, showcasing exceptional drone handling, technical precision, and effective problem-solving. This achievement reflects the team's dedication to innovation and excellence in competitive drone technology.",
   },
   {
     year: '2026',
@@ -33,6 +35,7 @@ const achievementsData = [
     src: '/assets/AIT Achievement.jpeg',
     alt: 'AIT Drone Drag Wartech 4.0',
     title: 'AIT Drone Drag Wartech 4.0',
+    description: "Team Vajra, the Drone Club of MMCOE, secured 2nd Place among 10 participating teams at AIT Drone Drag 2026, held at Army Institute of Technology, Pune. Competing with a 3.5-inch racing quadcopter, the team showcased excellent piloting skills, speed, precision, and control while navigating a challenging obstacle course.",
   },
   {
     year: '2026',
