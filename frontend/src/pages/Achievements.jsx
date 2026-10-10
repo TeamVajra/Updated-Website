@@ -39,6 +39,7 @@ const achievementsData = [
     src: '/assets/COEP Mindspark Achievmanet.jpeg',
     alt: 'COEP Mindspark - ROBO FALCONARY Rank - 1',
     title: 'COEP Mindspark - ROBO FALCONARY Rank - 1',
+    description: "Team Vajra secured 1st Place in Robo Falconry at Mindspark 2026, hosted by COEP Technological University! A win powered by teamwork, precision, and our custom-designed payload dropping mechanism.",
   },
   // 2025
   {
