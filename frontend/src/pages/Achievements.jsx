@@ -34,6 +34,12 @@ const achievementsData = [
     alt: 'AIT Drone Drag Wartech 4.0',
     title: 'AIT Drone Drag Wartech 4.0',
   },
+  {
+    year: '2026',
+    src: '/assets/COEP Mindspark Achievmanet.jpeg',
+    alt: 'COEP Mindspark - ROBO FALCONARY Rank - 1',
+    title: 'COEP Mindspark - ROBO FALCONARY Rank - 1',
+  },
   // 2025
   {
     year: '2025',
@@ -195,6 +201,25 @@ const Achievements = () => {
                 </Card>
               </div>
             </FadeIn>
+
+            <FadeIn delay={0.35} style={{ width: '100%' }}>
+              <div
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => e.key === 'Enter' && openLightbox(4)}
+                aria-label="Enlarge COEP Mindspark - ROBO FALCONARY Rank - 1"
+                style={{ display: 'block', width: '100%', outline: 'none' }}
+              >
+                <Card
+                  imageSrc="/assets/COEP Mindspark Achievmanet.jpeg"
+                  imageAlt="COEP Mindspark - ROBO FALCONARY Rank - 1"
+                  className="achievement-card"
+                  onClick={() => openLightbox(4)}
+                >
+                  <div className="ui-card-caption">COEP Mindspark - ROBO FALCONARY Rank - 1</div>
+                </Card>
+              </div>
+            </FadeIn>
           </Grid>
         </div>
 
@@ -216,7 +241,7 @@ const Achievements = () => {
               <div
                 role="button"
                 tabIndex={0}
-                onKeyDown={(e) => e.key === 'Enter' && openLightbox(4)}
+                onKeyDown={(e) => e.key === 'Enter' && openLightbox(5)}
                 aria-label="Enlarge Technoxian 2025 - World Rank 3 / All India Rank 2"
                 style={{ display: 'block', width: '100%', outline: 'none' }}
               >
@@ -224,7 +249,7 @@ const Achievements = () => {
                   imageSrc="/assets/vajra-onstage.jpg"
                   imageAlt="Technoxian 2025"
                   className="achievement-card"
-                  onClick={() => openLightbox(4)}
+                  onClick={() => openLightbox(5)}
                 >
                   <div className="ui-card-caption">Technoxian 2025 - World Rank 3 / All India Rank 2</div>
                 </Card>
@@ -251,7 +276,7 @@ const Achievements = () => {
               <div
                 role="button"
                 tabIndex={0}
-                onKeyDown={(e) => e.key === 'Enter' && openLightbox(5)}
+                onKeyDown={(e) => e.key === 'Enter' && openLightbox(6)}
                 aria-label="Enlarge Technoxian 2024 - World Rank 4 / All India Rank 3"
                 style={{ display: 'block', width: '100%', outline: 'none' }}
               >
@@ -259,7 +284,7 @@ const Achievements = () => {
                   imageSrc="/assets/technoxian-24.jpg"
                   imageAlt="Technoxian Championship 2024"
                   className="achievement-card"
-                  onClick={() => openLightbox(5)}
+                  onClick={() => openLightbox(6)}
                 >
                   <div className="ui-card-caption">Technoxian 2024 - World Rank 4 / All India Rank 3</div>
                 </Card>
@@ -286,7 +311,7 @@ const Achievements = () => {
               <div
                 role="button"
                 tabIndex={0}
-                onKeyDown={(e) => e.key === 'Enter' && openLightbox(6)}
+                onKeyDown={(e) => e.key === 'Enter' && openLightbox(7)}
                 aria-label="Enlarge Technoxian World Cup'26"
                 style={{ display: 'block', width: '100%', outline: 'none' }}
               >
@@ -294,7 +319,7 @@ const Achievements = () => {
                   imageSrc="/assets/tech.png"
                   imageAlt="Technoxian World Cup"
                   className="achievement-card no-watermark"
-                  onClick={() => openLightbox(6)}
+                  onClick={() => openLightbox(7)}
                 >
                   <div className="ui-card-caption">Technoxian World Cup'26</div>
                 </Card>
